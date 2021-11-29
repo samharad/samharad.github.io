@@ -4,7 +4,8 @@
 
 (ns script.aoc
   (:require [hyperfiddle.rcf :as rcf]
-            [clojure.string :as str]))
+            [clojure.string :as str]
+            [clojure.java.io :as io]))
 
 (rcf/enable!)
 
@@ -12,8 +13,12 @@
   (let [fmt-str "/Users/samadams/workspace/advent/advent-of-code-clojure/src/aoc/%s/day/%02d.clj"]
     (format fmt-str year day)))
 
-(defn absolute-dest-path [year day]
+(defn absolute-draft-path [year day]
   (let [fmt-str "/Users/samadams/workspace/blog/samharad.github.io/_drafts/aoc/%1$s/advent-of-code-%1$s-%2$02d.md"]
+    (format fmt-str year day)))
+
+(defn absolute-publish-path [year day]
+  (let [fmt-str "/Users/samadams/workspace/blog/samharad.github.io/_posts/aoc/%1$s/advent-of-code-%1$s-%2$02d.md"]
     (format fmt-str year day)))
 
 (defn with-metadata [src-line]
@@ -71,23 +76,32 @@
   (let [source (slurp (absolute-ns-path-for year day))
         md (to-blog-md source)
         blog (blog year day md)]
-    (spit (absolute-dest-path year day) blog)))
+    (spit (absolute-draft-path year day) blog)))
 
 
 (rcf/tests
 
   (absolute-ns-path-for 2021 1) := "/Users/samadams/workspace/advent/advent-of-code-clojure/src/aoc/2021/day/01.clj"
 
-  (absolute-dest-path 2021 1) := "/Users/samadams/workspace/blog/samharad.github.io/_drafts/aoc/2021/advent-of-code-2021-01.md"
+  (absolute-draft-path 2021 1) := "/Users/samadams/workspace/blog/samharad.github.io/_drafts/aoc/2021/advent-of-code-2021-01.md"
 
-  (to-blog-md ";; # Hello\n(hello)") := "# Hello\n```\n(hello)\n```\n"
+  (to-blog-md ";; # Hello\n(hello)") := "# Hello\n```clojure\n(hello)\n```\n"
 
   (frontmatter 2021 1) := "---\nlayout: post\ntitle: Advent of Code 2021 Day 01\ndraft: true\n---"
 
   (blog 2021 1 "foo") := "---\nlayout: post\ntitle: Advent of Code 2021 Day 01\ndraft: true\n---\nfoo")
 
+
+
 (comment
-  (copy-to-blog! 2021 1)
+  (do
+    (def year 2021)
+    (def day 1))
+
+  (copy-to-blog! year day)
+
+  (io/copy (io/file (absolute-draft-path year day))
+           (io/file (absolute-publish-path year day)))
   ,)
 
 
