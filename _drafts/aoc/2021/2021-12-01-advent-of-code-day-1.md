@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Advent of Code 2021 Day 01
+title: "Advent of Code 2021: Day 1"
 draft: true
 ---
 # This is a large heading!
@@ -11,6 +11,13 @@ draft: true
 ```
 
 ### This is a smaller heading!
+
+# H1
+## H2
+### H3
+#### H4
+##### H5
+###### H6
 
 Let's paste the input:
 ```clojure
@@ -34,3 +41,5 @@ This is plain text (in markdown).
 ```
 
 More markdown: *emphasis*, ~~strikethrough~~
+
+Markdown

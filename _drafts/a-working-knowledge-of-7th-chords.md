@@ -3,7 +3,7 @@ layout: post
 title:  "A Working Knowledge of 7th Chords"
 not-categories: music theory guitar
 draft: true
-
+published: false
 ---
 
 

@@ -14,11 +14,11 @@
     (format fmt-str year day)))
 
 (defn absolute-draft-path [year day]
-  (let [fmt-str "/Users/samadams/workspace/blog/samharad.github.io/_drafts/aoc/%1$s/advent-of-code-%1$s-%2$02d.md"]
+  (let [fmt-str "/Users/samadams/workspace/blog/samharad.github.io/_drafts/aoc/%1$s/%1$s-12-%2$02d-advent-of-code-day-%2$d.md"]
     (format fmt-str year day)))
 
 (defn absolute-publish-path [year day]
-  (let [fmt-str "/Users/samadams/workspace/blog/samharad.github.io/_posts/aoc/%1$s/advent-of-code-%1$s-%2$02d.md"]
+  (let [fmt-str "/Users/samadams/workspace/blog/samharad.github.io/_posts/aoc/%1$s/%1$s-12-%2$02d-advent-of-code-day-%2$d.md"]
     (format fmt-str year day)))
 
 (defn with-metadata [src-line]
@@ -63,7 +63,7 @@
 (defn frontmatter [year day]
   (let [lines ["---"
                "layout: post"
-               (format "title: Advent of Code %s Day %02d" year day)
+               (format "title: \"Advent of Code %s: Day %d\"" year day)
                "draft: true"
                "---"]]
     (str/join "\n" lines)))
