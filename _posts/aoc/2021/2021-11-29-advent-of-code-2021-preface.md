@@ -1,7 +1,6 @@
 ---
 layout: post
 title: "Advent of Code 2021: Preface"
-draft: true
 ---
 
 It's almost time again for the [Advent of Code](https://adventofcode.com/) -- a festive, communal marathon that's somehow
