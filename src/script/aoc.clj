@@ -38,7 +38,11 @@
        (str/join "\n")))
 
 (defmethod grouping->md :src [{:keys [lines]}]
-  (let [lines (remove #(re-matches #"^\s*$" %) lines)
+  (let [lines (->> lines
+                   (drop-while #(re-matches #"^\s*$" %))
+                   (reverse)
+                   (drop-while #(re-matches #"^\s*$" %))
+                   (reverse))
         code (str/join "\n" lines)]
     (if (seq lines)
       (str "```clojure\n" code "\n```\n")
@@ -83,13 +87,13 @@
 
   (absolute-ns-path-for 2021 1) := "/Users/samadams/workspace/advent/advent-of-code-clojure/src/aoc/2021/day/01.clj"
 
-  (absolute-draft-path 2021 1) := "/Users/samadams/workspace/blog/samharad.github.io/_drafts/aoc/2021/advent-of-code-2021-01.md"
+  (absolute-draft-path 2021 1) := "/Users/samadams/workspace/blog/samharad.github.io/_drafts/aoc/2021/2021-12-01-advent-of-code-day-1.md"
 
   (to-blog-md ";; # Hello\n(hello)") := "# Hello\n```clojure\n(hello)\n```\n"
 
-  (frontmatter 2021 1) := "---\nlayout: post\ntitle: Advent of Code 2021 Day 01\ndraft: true\n---"
+  (frontmatter 2021 1) := "---\nlayout: post\ntitle: \"Advent of Code 2021: Day 1\"\ndraft: true\n---"
 
-  (blog 2021 1 "foo") := "---\nlayout: post\ntitle: Advent of Code 2021 Day 01\ndraft: true\n---\nfoo")
+  (blog 2021 1 "foo") := "---\nlayout: post\ntitle: \"Advent of Code 2021: Day 1\"\ndraft: true\n---\nfoo")
 
 
 

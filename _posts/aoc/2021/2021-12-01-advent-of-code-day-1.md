@@ -1,7 +1,6 @@
 ---
 layout: post
 title: "Advent of Code 2021: Day 1"
-draft: true
 ---
 T minus one hour 'til day one... wondering if I can score any
 points at the midnight drop. I've got my `str/split-lines` and
