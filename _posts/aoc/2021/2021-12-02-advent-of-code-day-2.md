@@ -1,7 +1,6 @@
 ---
 layout: post
 title: "Advent of Code 2021: Day 2"
-draft: true
 ---
 [Day 2](https://adventofcode.com/2021/day/2) was another midnight attempt for me.
 I went for speed but didn't crack the top thousand solves. Now, after a night's sleep,
