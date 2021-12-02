@@ -100,7 +100,7 @@
 (comment
   (do
     (def year 2021)
-    (def day 1))
+    (def day 2))
 
   (copy-to-blog! year day)
 
