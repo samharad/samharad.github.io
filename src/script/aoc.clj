@@ -28,7 +28,7 @@
     {:type type :raw src-line}))
 
 (defn remove-line-comment [s]
-  (str/replace-first s #";; *" ""))
+  (str/replace-first s #";; ?" ""))
 
 (defmulti grouping->md :type)
 
@@ -100,9 +100,8 @@
 (comment
   (do
     (def year 2021)
-    (def day 3))
-
-  (copy-to-blog! year day)
+    (def day 4)
+    (copy-to-blog! year day))
 
   (io/copy (io/file (absolute-draft-path year day))
            (io/file (absolute-publish-path year day)))
