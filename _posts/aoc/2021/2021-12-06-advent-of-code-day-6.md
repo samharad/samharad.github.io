@@ -1,7 +1,6 @@
 ---
 layout: post
 title: "Advent of Code 2021: Day 6"
-draft: true
 ---
 On the eve of [Day 6](https://adventofcode.com/2021/day/6) I was resolved
 to get an early night's sleep, and so of course found myself at my desk
