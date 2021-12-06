@@ -108,6 +108,8 @@
 .site-footer {
   border-top: 1px solid $grey-color-light;
   padding: $spacing-unit 0;
+  display: flex;
+  justify-content: center;
 }
 
 .footer-heading {
@@ -118,7 +120,12 @@
 .contact-list,
 .social-media-list {
   list-style: none;
-  margin-left: 0;
+  svg,
+  span {
+    vertical-align: middle;
+    display: inline-block;
+  }  //vertical-align: center;
+  //margin-left: 0;
 }
 
 .footer-col-wrapper {
