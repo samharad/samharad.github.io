@@ -1,7 +1,6 @@
 ---
 layout: post
 title: "Advent of Code 2021: Day 7"
-draft: true
 ---
 [Day 7](https://adventofcode.com/2021/day/7) seems forgiving in that
 it allows a mostly-brute-force solution to finish in ~2s,
