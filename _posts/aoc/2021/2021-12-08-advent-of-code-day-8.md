@@ -1,7 +1,6 @@
 ---
 layout: post
 title: "Advent of Code 2021: Day 8"
-draft: true
 ---
 [Day 8](https://adventofcode.com/2021/day/8) was a unique puzzle, and I rose
 to its occasion by writing some code unfit for human eyes. Read at your peril!
