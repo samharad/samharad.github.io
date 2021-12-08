@@ -100,7 +100,7 @@
 (comment
   (do
     (def year 2021)
-    (def day 7)
+    (def day 8)
     (copy-to-blog! year day))
 
   (io/copy (io/file (absolute-draft-path year day))
