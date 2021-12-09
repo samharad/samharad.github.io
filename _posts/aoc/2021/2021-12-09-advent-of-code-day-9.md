@@ -1,7 +1,6 @@
 ---
 layout: post
 title: "Advent of Code 2021: Day 9"
-draft: true
 ---
 Today's puzzle finds me after a late start to a busy day,
 so my goal here is to write my thought process as I go and
