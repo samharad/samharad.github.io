@@ -1,7 +1,6 @@
 ---
 layout: post
 title: "Advent of Code 2021: Day 10"
-draft: true
 ---
 It's 10am on an overcast but less-frigid winter day in Michigan,
 and time for me to solve day 10 of the Advent.
