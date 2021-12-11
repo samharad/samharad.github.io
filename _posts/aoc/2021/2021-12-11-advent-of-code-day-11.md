@@ -1,7 +1,6 @@
 ---
 layout: post
 title: "Advent of Code 2021: Day 11"
-draft: true
 ---
 I wasn't able to start today's puzzle until later in the day, so I was
 thankful that it was a familiar one.
