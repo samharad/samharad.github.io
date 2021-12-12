@@ -1,7 +1,6 @@
 ---
 layout: post
 title: "Advent of Code 2021: Day 12"
-draft: true
 ---
 Finding myself up at midnight last night I couldn't resist
 trying Day 12's puzzle, and thankfully I got my answers without
