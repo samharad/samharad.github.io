@@ -1,7 +1,6 @@
 ---
 layout: post
 title: "Advent of Code 2021: Day 13"
-draft: true
 ---
 Day 13 was a very satisfying midnight solve -- more on why below!
 ```clojure
