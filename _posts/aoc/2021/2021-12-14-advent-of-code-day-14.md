@@ -1,7 +1,6 @@
 ---
 layout: post
 title: "Advent of Code 2021: Day 14"
-draft: true
 ---
 This was a slow midnight solve for me, and a groggy writeup
 this morning. Not the cleanest or most succinct code, but it
