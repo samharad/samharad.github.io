@@ -1,7 +1,6 @@
 ---
 layout: post
 title: "Advent of Code 2021: Day 15"
-draft: true
 ---
 Today's was the toughest yet for me, but after some hours spent
 at both ends of the candle and some helpful hints from the Clojurians
