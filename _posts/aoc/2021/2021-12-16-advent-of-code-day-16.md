@@ -1,7 +1,6 @@
 ---
 layout: post
 title: "Advent of Code 2021: Day 16"
-draft: true
 ---
 I was up when the day turned to the 16th, but with the wordy spec
 and what I suspected would be a pile of code to write, I saved the puzzle
