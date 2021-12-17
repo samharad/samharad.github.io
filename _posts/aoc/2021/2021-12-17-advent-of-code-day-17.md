@@ -1,7 +1,6 @@
 ---
 layout: post
 title: "Advent of Code 2021: Day 17"
-draft: true
 ---
 Today's puzzle was fun, but all I came up with
 was a **hacky and messy** solution. Gotta copy-paste to
