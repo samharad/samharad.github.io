@@ -1,7 +1,6 @@
 ---
 layout: post
 title: "Advent of Code 2021: Day 20"
-draft: true
 ---
 After struggling unsuccessfully with day 18 and skipping
 day 19 entirely, I was happy to get a win on today's puzzle.
