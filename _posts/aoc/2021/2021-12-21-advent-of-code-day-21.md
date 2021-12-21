@@ -1,7 +1,6 @@
 ---
 layout: post
 title: "Advent of Code 2021: Day 21"
-draft: true
 ---
 Today's puzzle was very satisfying to solve -- one big
 hack notwithstanding.
