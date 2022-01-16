@@ -100,16 +100,17 @@
 (comment
   (do
     (def year 2021)
-    (def day 23)
-    (watch/start-watch [{:path (-> (absolute-ns-path-for year day)
-                                   (java.io.File.)
-                                   (.getParent)
-                                   (.toString))
-                         :event-types [:modify]
-                         :callback (fn [_ filename]
-                                     (when (= filename (absolute-ns-path-for year day))
-                                       (println "Copying!")
-                                       (copy-to-blog! year day)))}]))
+    (def day 23))
+
+  (watch/start-watch [{:path (-> (absolute-ns-path-for year day)
+                                 (java.io.File.)
+                                 (.getParent)
+                                 (.toString))
+                       :event-types [:modify]
+                       :callback (fn [_ filename]
+                                   (when (= filename (absolute-ns-path-for year day))
+                                     (println "Copying!")
+                                     (copy-to-blog! year day)))}])
   (copy-to-blog! year day)
 
   (io/copy (io/file (absolute-draft-path year day))
