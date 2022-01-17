@@ -6,7 +6,12 @@
   (:require [hyperfiddle.rcf :as rcf]
             [clojure.string :as str]
             [clojure.java.io :as io]
-            [clojure-watch.core :as watch]))
+            [clojure-watch.core :as watch]
+            [hawk.core :as hawk]
+            [nextjournal.beholder :as beholder])
+  (:import (io.methvin.watcher DirectoryWatcher DirectoryWatcher$Builder DirectoryChangeListener)
+           (java.nio.file Path Paths)
+           (java.net URI)))
 
 (rcf/enable!)
 
@@ -100,17 +105,40 @@
 (comment
   (do
     (def year 2021)
-    (def day 23))
+    (def day 24))
 
-  (watch/start-watch [{:path (-> (absolute-ns-path-for year day)
-                                 (java.io.File.)
-                                 (.getParent)
-                                 (.toString))
-                       :event-types [:modify]
-                       :callback (fn [_ filename]
-                                   (when (= filename (absolute-ns-path-for year day))
-                                     (println "Copying!")
-                                     (copy-to-blog! year day)))}])
+  ;; Wraps the below (DirectoryWatcher)
+  (beholder/watch
+    (fn [e]
+      (copy-to-blog! year day))
+    (absolute-ns-path-for year day))
+
+  ;; Faster than hawk; slightly faster than clojure-watch it seems
+  #_(-> (DirectoryWatcher/builder)
+        (.path (Paths/get (URI. (str "file://" (absolute-ns-path-for year day)))))
+        (.listener (reify
+                     DirectoryChangeListener
+                     (onEvent [this event]
+                       (prn event)
+                       (copy-to-blog! year day))))
+        (.build)
+        (.watchAsync))
+
+  #_(hawk/watch! [{:paths [(absolute-ns-path-for year day)]
+                   :handler (fn [ctx e]
+                              (println e)
+                              (when (= (:kind e) :modify)
+                                (copy-to-blog! year day)))}])
+
+  #_(watch/start-watch [{:path (-> (absolute-ns-path-for year day)
+                                   (java.io.File.)
+                                   (.getParent)
+                                   (.toString))
+                         :event-types [:modify]
+                         :callback (fn [_ filename]
+                                     (when (= filename (absolute-ns-path-for year day))
+                                       (println "Copying!")
+                                       (copy-to-blog! year day)))}])
   (copy-to-blog! year day)
 
   (io/copy (io/file (absolute-draft-path year day))
