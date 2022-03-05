@@ -105,7 +105,7 @@
 (comment
   (do
     (def year 2021)
-    (def day 24))
+    (def day 19))
 
   ;; Wraps the below (DirectoryWatcher)
   (beholder/watch
