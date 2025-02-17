@@ -11,3 +11,4 @@
 
 ## TODO
 - [ ] Make this readme helpful
+- [ ] Configure such that assets can be kept beside corresponding posts
