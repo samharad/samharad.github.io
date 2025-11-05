@@ -1,0 +1,15 @@
+{
+  "name": "samharad-blog",
+  "version": "1.0.0",
+  "description": "Jekyll blog with Preact components",
+  "scripts": {
+    "build:js": "esbuild _js/*.jsx --bundle --outdir=assets/js --format=esm --jsx=automatic --jsx-import-source=preact",
+    "watch:js": "esbuild _js/*.jsx --bundle --outdir=assets/js --format=esm --jsx=automatic --jsx-import-source=preact --watch=forever"
+  },
+  "dependencies": {
+    "preact": "^10.19.3"
+  },
+  "devDependencies": {
+    "esbuild": "^0.19.11"
+  }
+}

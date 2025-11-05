@@ -8,3 +8,4 @@ vendor
 *.iml
 .nrepl-port
 .cpcache
+node_modules
