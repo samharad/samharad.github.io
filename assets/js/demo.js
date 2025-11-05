@@ -496,7 +496,7 @@ function Demo({ fsyncMode = false }) {
   const isInitialMount = A2(true);
   const handleUnplug = () => {
     setState((prev) => {
-      const isReversion = !prev.fsyncEnabled && prev.favColor !== prev.diskFavColor && prev.showSaved;
+      const isReversion = !prev.fsyncEnabled && prev.favColor !== prev.diskFavColor;
       return {
         ...prev,
         favColor: prev.diskFavColor,
@@ -614,7 +614,7 @@ function Demo({ fsyncMode = false }) {
       !isShowingSpinner && /* @__PURE__ */ u3(k, { children: [
         /* @__PURE__ */ u3("span", { style: {
           opacity: shouldShowSaved ? 1 : 0,
-          transition: "opacity 0.3s ease-in-out",
+          transition: state.showReversion ? "none" : "opacity 0.3s ease-in-out",
           fontWeight: "bold"
         }, children: "Saved!" }),
         /* @__PURE__ */ u3("span", { style: {
@@ -645,7 +645,12 @@ function Demo({ fsyncMode = false }) {
       /* @__PURE__ */ u3("span", { style: { color: state.diskFavColor }, children: state.diskFavColor })
     ] });
   }
-  return /* @__PURE__ */ u3("div", { style: { border: "2px solid #ddd", padding: "20px", borderRadius: "8px", margin: "20px 0" }, children: [
+  return /* @__PURE__ */ u3("div", { style: {
+    border: "2px solid #ddd",
+    padding: "20px",
+    borderRadius: "8px",
+    margin: "20px 0"
+  }, children: [
     /* @__PURE__ */ u3("style", { children: `
         @keyframes spin {
           0% { transform: rotate(0deg); }

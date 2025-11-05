@@ -23,8 +23,7 @@ function Demo({ fsyncMode = false }) {
   const handleUnplug = () => {
     // Simulate instance restart - restore from disk, losing cache
     setState(prev => {
-      // Detect reversion: user saw "Saved!" but data wasn't on disk (only when fsync is disabled)
-      const isReversion = !prev.fsyncEnabled && prev.favColor !== prev.diskFavColor && prev.showSaved;
+      const isReversion = !prev.fsyncEnabled && prev.favColor !== prev.diskFavColor;
       return {
         ...prev,
         favColor: prev.diskFavColor,
@@ -167,7 +166,7 @@ function Demo({ fsyncMode = false }) {
         <>
           <span style={{
             opacity: shouldShowSaved ? 1 : 0,
-            transition: 'opacity 0.3s ease-in-out',
+            transition: state.showReversion ? 'none' : 'opacity 0.3s ease-in-out',
             fontWeight: 'bold'
           }}>
             Saved!
@@ -210,7 +209,12 @@ function Demo({ fsyncMode = false }) {
 
 // Renders a dropdown for favorite color selection
   return (
-    <div style={{border: '2px solid #ddd', padding: '20px', borderRadius: '8px', margin: '20px 0'}}>
+    <div style={{
+      border: '2px solid #ddd',
+      padding: '20px',
+      borderRadius: '8px',
+      margin: '20px 0'
+    }}>
       <style>{`
         @keyframes spin {
           0% { transform: rotate(0deg); }
