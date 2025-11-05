@@ -13,11 +13,29 @@ function Demo({ fsyncMode = false }) {
     cachedFavColor: 'blue',
     diskFavColor: 'blue',
     showSaved: false,
+    showReversion: false,
     savingColor: null,
     flushingColor: null,
     fsyncEnabled: false
   });
   const isInitialMount = useRef(true);
+
+  const handleUnplug = () => {
+    // Simulate instance restart - restore from disk, losing cache
+    setState(prev => {
+      // Detect reversion: user saw "Saved!" but data wasn't on disk (only when fsync is disabled)
+      const isReversion = !prev.fsyncEnabled && prev.favColor !== prev.diskFavColor && prev.showSaved;
+      return {
+        ...prev,
+        favColor: prev.diskFavColor,
+        cachedFavColor: prev.diskFavColor,
+        showSaved: false,
+        showReversion: isReversion,
+        savingColor: null,
+        flushingColor: null
+      };
+    });
+  };
 
   useEffect(() => {
     if (state.showSaved) {
@@ -28,16 +46,27 @@ function Demo({ fsyncMode = false }) {
     }
   }, [state.showSaved]);
 
+  useEffect(() => {
+    if (state.showReversion) {
+      const timer = setTimeout(() => {
+        setState(prev => ({...prev, showReversion: false}));
+      }, SAVED_MESSAGE_DURATION);
+      return () => clearTimeout(timer);
+    }
+  }, [state.showReversion]);
+
   // Show "Saved!" when fsync is enabled and color is flushed to disk
   useEffect(() => {
     if (isInitialMount.current) {
       isInitialMount.current = false;
       return;
     }
-    if (state.fsyncEnabled && state.diskFavColor === state.favColor && state.flushingColor === null && state.savingColor === null) {
+    // Only show "Saved!" when diskFavColor changes to match favColor (actual save completion)
+    // Don't show it just because fsyncEnabled changed or on initial mount
+    if (state.fsyncEnabled && state.diskFavColor === state.favColor && state.flushingColor === null && state.savingColor === null && !state.showSaved) {
       setState(prev => ({...prev, showSaved: true}));
     }
-  }, [state.diskFavColor, state.favColor, state.flushingColor, state.savingColor]);
+  }, [state.diskFavColor]);
 
   // Handle saving to cache (1 second operation)
   useEffect(() => {
@@ -135,13 +164,23 @@ function Demo({ fsyncMode = false }) {
         </select>
       )}
       {!isShowingSpinner && (
-        <span style={{
-          opacity: shouldShowSaved ? 1 : 0,
-          transition: 'opacity 0.3s ease-in-out',
-          fontWeight: 'bold'
-        }}>
-          Saved!
-        </span>
+        <>
+          <span style={{
+            opacity: shouldShowSaved ? 1 : 0,
+            transition: 'opacity 0.3s ease-in-out',
+            fontWeight: 'bold'
+          }}>
+            Saved!
+          </span>
+          <span style={{
+            opacity: state.showReversion ? 1 : 0,
+            transition: 'opacity 0.3s ease-in-out',
+            fontWeight: 'bold',
+            color: '#e74c3c'
+          }}>
+            Reversion!
+          </span>
+        </>
       )}
     </div>;
   }
@@ -182,38 +221,55 @@ function Demo({ fsyncMode = false }) {
         <div>
           {FavoriteColorSelector()}
         </div>
-        {fsyncMode && (
-          <label style={{display: 'flex', alignItems: 'center', gap: '8px', cursor: state.diskFavColor !== state.favColor ? 'not-allowed' : 'pointer'}}>
-            <span
-              style={{opacity: state.diskFavColor !== state.favColor ? 0.5 : 1, fontFamily: 'monospace'}}>fsync</span>
-            <div style={{
-              position: 'relative',
-              width: '44px',
-              height: '24px',
-              backgroundColor: state.fsyncEnabled ? '#3498db' : '#ccc',
-              borderRadius: '12px',
-              transition: 'background-color 0.3s',
-              opacity: state.diskFavColor !== state.favColor ? 0.5 : 1,
-              pointerEvents: state.diskFavColor !== state.favColor ? 'none' : 'auto'
+        <div style={{display: 'flex', alignItems: 'center', gap: '16px'}}>
+          <button
+            onClick={handleUnplug}
+            style={{
+              padding: '6px 12px',
+              backgroundColor: '#e74c3c',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer',
+              fontWeight: 'bold',
+              fontSize: '14px'
             }}
-            onClick={() => {
-              if (state.diskFavColor === state.favColor) {
-                setState(prev => ({...prev, fsyncEnabled: !prev.fsyncEnabled}));
-              }
-            }}>
+          >
+            🔌 Unplug!
+          </button>
+          {fsyncMode && (
+            <label style={{display: 'flex', alignItems: 'center', gap: '8px', cursor: state.diskFavColor !== state.favColor ? 'not-allowed' : 'pointer'}}>
+              <span
+                style={{opacity: state.diskFavColor !== state.favColor ? 0.5 : 1, fontFamily: 'monospace'}}>fsync</span>
               <div style={{
-                position: 'absolute',
-                top: '2px',
-                left: state.fsyncEnabled ? '22px' : '2px',
-                width: '20px',
-                height: '20px',
-                backgroundColor: 'white',
-                borderRadius: '50%',
-                transition: 'left 0.3s'
-              }}></div>
-            </div>
-          </label>
-        )}
+                position: 'relative',
+                width: '44px',
+                height: '24px',
+                backgroundColor: state.fsyncEnabled ? '#3498db' : '#ccc',
+                borderRadius: '12px',
+                transition: 'background-color 0.3s',
+                opacity: state.diskFavColor !== state.favColor ? 0.5 : 1,
+                pointerEvents: state.diskFavColor !== state.favColor ? 'none' : 'auto'
+              }}
+              onClick={() => {
+                if (state.diskFavColor === state.favColor) {
+                  setState(prev => ({...prev, fsyncEnabled: !prev.fsyncEnabled}));
+                }
+              }}>
+                <div style={{
+                  position: 'absolute',
+                  top: '2px',
+                  left: state.fsyncEnabled ? '22px' : '2px',
+                  width: '20px',
+                  height: '20px',
+                  backgroundColor: 'white',
+                  borderRadius: '50%',
+                  transition: 'left 0.3s'
+                }}></div>
+              </div>
+            </label>
+          )}
+        </div>
       </div>
       <br/>
       {CachedColorDisplay()}

@@ -488,11 +488,26 @@ function Demo({ fsyncMode = false }) {
     cachedFavColor: "blue",
     diskFavColor: "blue",
     showSaved: false,
+    showReversion: false,
     savingColor: null,
     flushingColor: null,
     fsyncEnabled: false
   });
   const isInitialMount = A2(true);
+  const handleUnplug = () => {
+    setState((prev) => {
+      const isReversion = !prev.fsyncEnabled && prev.favColor !== prev.diskFavColor && prev.showSaved;
+      return {
+        ...prev,
+        favColor: prev.diskFavColor,
+        cachedFavColor: prev.diskFavColor,
+        showSaved: false,
+        showReversion: isReversion,
+        savingColor: null,
+        flushingColor: null
+      };
+    });
+  };
   y2(() => {
     if (state.showSaved) {
       const timer = setTimeout(() => {
@@ -502,14 +517,22 @@ function Demo({ fsyncMode = false }) {
     }
   }, [state.showSaved]);
   y2(() => {
+    if (state.showReversion) {
+      const timer = setTimeout(() => {
+        setState((prev) => ({ ...prev, showReversion: false }));
+      }, SAVED_MESSAGE_DURATION);
+      return () => clearTimeout(timer);
+    }
+  }, [state.showReversion]);
+  y2(() => {
     if (isInitialMount.current) {
       isInitialMount.current = false;
       return;
     }
-    if (state.fsyncEnabled && state.diskFavColor === state.favColor && state.flushingColor === null && state.savingColor === null) {
+    if (state.fsyncEnabled && state.diskFavColor === state.favColor && state.flushingColor === null && state.savingColor === null && !state.showSaved) {
       setState((prev) => ({ ...prev, showSaved: true }));
     }
-  }, [state.diskFavColor, state.favColor, state.flushingColor, state.savingColor]);
+  }, [state.diskFavColor]);
   y2(() => {
     if (state.favColor !== state.cachedFavColor) {
       const colorToSave = state.favColor;
@@ -588,11 +611,19 @@ function Demo({ fsyncMode = false }) {
           ]
         }
       ),
-      !isShowingSpinner && /* @__PURE__ */ u3("span", { style: {
-        opacity: shouldShowSaved ? 1 : 0,
-        transition: "opacity 0.3s ease-in-out",
-        fontWeight: "bold"
-      }, children: "Saved!" })
+      !isShowingSpinner && /* @__PURE__ */ u3(k, { children: [
+        /* @__PURE__ */ u3("span", { style: {
+          opacity: shouldShowSaved ? 1 : 0,
+          transition: "opacity 0.3s ease-in-out",
+          fontWeight: "bold"
+        }, children: "Saved!" }),
+        /* @__PURE__ */ u3("span", { style: {
+          opacity: state.showReversion ? 1 : 0,
+          transition: "opacity 0.3s ease-in-out",
+          fontWeight: "bold",
+          color: "#e74c3c"
+        }, children: "Reversion!" })
+      ] })
     ] });
   }
   function CachedColorDisplay() {
@@ -623,44 +654,63 @@ function Demo({ fsyncMode = false }) {
       ` }),
     /* @__PURE__ */ u3("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between" }, children: [
       /* @__PURE__ */ u3("div", { children: FavoriteColorSelector() }),
-      fsyncMode && /* @__PURE__ */ u3("label", { style: { display: "flex", alignItems: "center", gap: "8px", cursor: state.diskFavColor !== state.favColor ? "not-allowed" : "pointer" }, children: [
+      /* @__PURE__ */ u3("div", { style: { display: "flex", alignItems: "center", gap: "16px" }, children: [
         /* @__PURE__ */ u3(
-          "span",
+          "button",
           {
-            style: { opacity: state.diskFavColor !== state.favColor ? 0.5 : 1, fontFamily: "monospace" },
-            children: "fsync"
+            onClick: handleUnplug,
+            style: {
+              padding: "6px 12px",
+              backgroundColor: "#e74c3c",
+              color: "white",
+              border: "none",
+              borderRadius: "4px",
+              cursor: "pointer",
+              fontWeight: "bold",
+              fontSize: "14px"
+            },
+            children: "\u{1F50C} Unplug!"
           }
         ),
-        /* @__PURE__ */ u3(
-          "div",
-          {
-            style: {
-              position: "relative",
-              width: "44px",
-              height: "24px",
-              backgroundColor: state.fsyncEnabled ? "#3498db" : "#ccc",
-              borderRadius: "12px",
-              transition: "background-color 0.3s",
-              opacity: state.diskFavColor !== state.favColor ? 0.5 : 1,
-              pointerEvents: state.diskFavColor !== state.favColor ? "none" : "auto"
-            },
-            onClick: () => {
-              if (state.diskFavColor === state.favColor) {
-                setState((prev) => ({ ...prev, fsyncEnabled: !prev.fsyncEnabled }));
-              }
-            },
-            children: /* @__PURE__ */ u3("div", { style: {
-              position: "absolute",
-              top: "2px",
-              left: state.fsyncEnabled ? "22px" : "2px",
-              width: "20px",
-              height: "20px",
-              backgroundColor: "white",
-              borderRadius: "50%",
-              transition: "left 0.3s"
-            } })
-          }
-        )
+        fsyncMode && /* @__PURE__ */ u3("label", { style: { display: "flex", alignItems: "center", gap: "8px", cursor: state.diskFavColor !== state.favColor ? "not-allowed" : "pointer" }, children: [
+          /* @__PURE__ */ u3(
+            "span",
+            {
+              style: { opacity: state.diskFavColor !== state.favColor ? 0.5 : 1, fontFamily: "monospace" },
+              children: "fsync"
+            }
+          ),
+          /* @__PURE__ */ u3(
+            "div",
+            {
+              style: {
+                position: "relative",
+                width: "44px",
+                height: "24px",
+                backgroundColor: state.fsyncEnabled ? "#3498db" : "#ccc",
+                borderRadius: "12px",
+                transition: "background-color 0.3s",
+                opacity: state.diskFavColor !== state.favColor ? 0.5 : 1,
+                pointerEvents: state.diskFavColor !== state.favColor ? "none" : "auto"
+              },
+              onClick: () => {
+                if (state.diskFavColor === state.favColor) {
+                  setState((prev) => ({ ...prev, fsyncEnabled: !prev.fsyncEnabled }));
+                }
+              },
+              children: /* @__PURE__ */ u3("div", { style: {
+                position: "absolute",
+                top: "2px",
+                left: state.fsyncEnabled ? "22px" : "2px",
+                width: "20px",
+                height: "20px",
+                backgroundColor: "white",
+                borderRadius: "50%",
+                transition: "left 0.3s"
+              } })
+            }
+          )
+        ] })
       ] })
     ] }),
     /* @__PURE__ */ u3("br", {}),
