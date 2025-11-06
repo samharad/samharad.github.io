@@ -477,7 +477,7 @@ function u3(e3, t3, n2, o3, i4, u4) {
   return l.vnode && l.vnode(l3), l3;
 }
 
-// _js/demo.jsx
+// _js/fsync-demo.jsx
 var SAVE_TO_CACHE_DELAY = 1e3;
 var FLUSH_TO_DISK_DELAY = 1700;
 var FLUSH_DURATION = 1e3;
@@ -496,7 +496,7 @@ function Demo({ fsyncMode = false }) {
   const isInitialMount = A2(true);
   const handleUnplug = () => {
     setState((prev) => {
-      const isReversion = !prev.fsyncEnabled && prev.favColor !== prev.diskFavColor;
+      const isReversion = !prev.fsyncEnabled && prev.cachedFavColor !== prev.diskFavColor;
       return {
         ...prev,
         favColor: prev.diskFavColor,
@@ -604,10 +604,10 @@ function Demo({ fsyncMode = false }) {
           },
           children: [
             /* @__PURE__ */ u3("option", { value: "blue", children: "blue" }),
-            /* @__PURE__ */ u3("option", { value: "red", children: "red" }),
+            /* @__PURE__ */ u3("option", { value: "orange", children: "orange" }),
             /* @__PURE__ */ u3("option", { value: "green", children: "green" }),
             /* @__PURE__ */ u3("option", { value: "purple", children: "purple" }),
-            /* @__PURE__ */ u3("option", { value: "orange", children: "orange" })
+            /* @__PURE__ */ u3("option", { value: "pink", children: "pink" })
           ]
         }
       ),
@@ -664,15 +664,17 @@ function Demo({ fsyncMode = false }) {
           "button",
           {
             onClick: handleUnplug,
+            disabled: state.diskFavColor === state.favColor,
             style: {
               padding: "6px 12px",
-              backgroundColor: "#e74c3c",
+              backgroundColor: state.diskFavColor === state.favColor ? "#ccc" : "#e74c3c",
               color: "white",
               border: "none",
               borderRadius: "4px",
-              cursor: "pointer",
+              cursor: state.diskFavColor === state.favColor ? "not-allowed" : "pointer",
               fontWeight: "bold",
-              fontSize: "14px"
+              fontSize: "14px",
+              opacity: state.diskFavColor === state.favColor ? 0.5 : 1
             },
             children: "\u{1F50C} Unplug!"
           }

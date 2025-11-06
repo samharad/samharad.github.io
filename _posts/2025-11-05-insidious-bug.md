@@ -6,11 +6,11 @@ title: "Insidious Bug"
 This code tells a lie:
 
 ```js
-function saveFavoriteColor(favoriteColor) {
-    fs.writeFile('favoriteColor.txt', favoriteColor, (err) => {
-        if (err) throw err;
-        console.log('Saved!');
-    });
+const fs = require('fs/promises');
+
+async function saveFavoriteColor(favoriteColor) {
+  await fs.writeFile('favoriteColor.txt', favoriteColor, 'utf8');
+  console.log('Saved!');
 }
 ```
 
@@ -18,7 +18,7 @@ Take a moment to try and spot the lie. Is it obvious?
 
 As a hint, this story:
 
-Some time ago at Red Planet Labs, I was ramping up our chaos testing of Rama in advance of its launch. We'd long been injecting random process kills:
+Some time ago at [Red Planet Labs](https://redplanetlabs.com/), I was ramping up our chaos testing of [Rama](https://redplanetlabs.com/docs/~/index.html#gsc.tab=0), a distributed database and stream processing framework, in advance of its launch. We'd long been injecting random process kills:
 
 ```shell
 kill -9 <worker-pid>
@@ -52,18 +52,21 @@ In Rama's implementation, we often wrote to disk without an explicit fsync, but 
 <br/>
 <br/>
 
-The only way for us to exercise this bug was to actually terminate the machine without giving it a chance to flush the buffer to disk.
+The only way to actually exercise this bug was to terminate machines without giving them the chance to flush their buffers to disk.
 
 <br/>
 <br/>
 
-Here's a little visualization:
+Here's a little visualization; try "unplugging" the machine (i.e. forcefully restarting it) after a change is acknowledged as "Saved!", but before the cache is flushed to disk:
 
 <div id="demo-fsync-app"></div>
 
 Often, as developers, we interact with the disk via databases that by default address this issue for us (see <a href="https://postgresqlco.nf/doc/en/param/fsync/">Postgres</a>, <a href="https://dev.mysql.com/doc/refman/8.4/en/innodb-parameters.html#sysvar_innodb_flush_method">MySQL</a>) (though other databases, by default, don't (see <a href="https://www.mongodb.com/docs/manual/reference/command/fsync/">MongoDB</a>)).
 
-So, good to keep this one in mind!
+<br/>
+<br/>
+
+But, regardless, it's always good to keep this one ine mind.
 
 </details>
 

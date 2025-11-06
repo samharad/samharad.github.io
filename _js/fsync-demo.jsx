@@ -7,7 +7,7 @@ const FLUSH_TO_DISK_DELAY = 1700;
 const FLUSH_DURATION = 1000;
 const SAVED_MESSAGE_DURATION = 2000;
 
-function Demo({ fsyncMode = false }) {
+function FsyncDemo({ fsyncMode = false }) {
   const [state, setState] = useState({
     favColor: 'blue',
     cachedFavColor: 'blue',
@@ -23,7 +23,8 @@ function Demo({ fsyncMode = false }) {
   const handleUnplug = () => {
     // Simulate instance restart - restore from disk, losing cache
     setState(prev => {
-      const isReversion = !prev.fsyncEnabled && prev.favColor !== prev.diskFavColor;
+      // Only a reversion if data made it to cache but not to disk
+      const isReversion = !prev.fsyncEnabled && prev.cachedFavColor !== prev.diskFavColor;
       return {
         ...prev,
         favColor: prev.diskFavColor,
@@ -156,10 +157,10 @@ function Demo({ fsyncMode = false }) {
           }}
         >
           <option value="blue">blue</option>
-          <option value="red">red</option>
+          <option value="orange">orange</option>
           <option value="green">green</option>
           <option value="purple">purple</option>
-          <option value="orange">orange</option>
+          <option value="pink">pink</option>
         </select>
       )}
       {!isShowingSpinner && (
@@ -228,15 +229,17 @@ function Demo({ fsyncMode = false }) {
         <div style={{display: 'flex', alignItems: 'center', gap: '16px'}}>
           <button
             onClick={handleUnplug}
+            disabled={state.diskFavColor === state.favColor}
             style={{
               padding: '6px 12px',
-              backgroundColor: '#e74c3c',
+              backgroundColor: state.diskFavColor === state.favColor ? '#ccc' : '#e74c3c',
               color: 'white',
               border: 'none',
               borderRadius: '4px',
-              cursor: 'pointer',
+              cursor: state.diskFavColor === state.favColor ? 'not-allowed' : 'pointer',
               fontWeight: 'bold',
-              fontSize: '14px'
+              fontSize: '14px',
+              opacity: state.diskFavColor === state.favColor ? 0.5 : 1
             }}
           >
             🔌 Unplug!
@@ -285,13 +288,8 @@ function Demo({ fsyncMode = false }) {
 
 // Mount the component when the DOM is ready
 if (typeof window !== 'undefined') {
-  const container = document.getElementById('demo-app');
-  if (container) {
-    render(<Demo />, container);
-  }
-
   const fsyncContainer = document.getElementById('demo-fsync-app');
   if (fsyncContainer) {
-    render(<Demo fsyncMode={true} />, fsyncContainer);
+    render(<FsyncDemo fsyncMode={true} />, fsyncContainer);
   }
 }
